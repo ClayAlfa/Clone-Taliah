@@ -194,11 +194,17 @@ include 'includes/header.php';
                 <div class="col-md-6 col-lg-4">
                     <div class="card product-card">
                         <div class="product-image">
-                            <?php if ($product['image_url']): ?>
-                                <img src="<?php echo $product['image_url']; ?>" alt="<?php echo $product['name']; ?>" class="card-img-top">
-                            <?php else: ?>
-                                <img src="assets/img/no-image.jpg" alt="No Image" class="card-img-top">
-                            <?php endif; ?>
+                            <?php 
+                            $image_src = 'https://source.unsplash.com/random/300x300?product';
+                            if (!empty($product['image_url']) && filter_var($product['image_url'], FILTER_VALIDATE_URL)) {
+                                $image_src = htmlspecialchars($product['image_url']);
+                            } elseif (!empty($product['image_url'])) {
+                                // Jika ada image_url tapi tidak valid, gunakan unsplash dengan keyword dari nama produk
+                                $keyword = urlencode(str_replace(' ', '+', $product['name']));
+                                $image_src = "https://source.unsplash.com/300x300?" . $keyword;
+                            }
+                            ?>
+                            <img src="<?php echo $image_src; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="card-img-top">
                             <?php if ($product['stock'] <= 5): ?>
                                 <div class="product-badge bg-warning">Stok Terbatas</div>
                             <?php endif; ?>

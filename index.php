@@ -41,7 +41,7 @@ include 'includes/header.php';
             </div>
             <div class="col-lg-6">
                 <div class="hero-image text-center">
-                    <img src="<?php echo SITE_URL; ?>/assets/img/hero-shoes.svg" alt="Hero Shoes" class="img-fluid" style="max-height: 400px;">
+                    <img src="https://source.unsplash.com/random/1200x400?shoes" alt="Koleksi Sepatu & Sandal" class="img-fluid" style="max-height: 400px; border-radius: 15px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
                 </div>
             </div>
         </div>
@@ -122,11 +122,17 @@ include 'includes/header.php';
             <div class="col-md-6 col-lg-3">
                 <div class="card product-card">
                     <div class="product-image">
-                        <?php if ($product['image_url']): ?>
-                            <img src="<?php echo $product['image_url']; ?>" alt="<?php echo $product['name']; ?>" class="card-img-top">
-                        <?php else: ?>
-                            <img src="<?php echo SITE_URL; ?>/assets/img/no-image.jpg" alt="No Image" class="card-img-top">
-                        <?php endif; ?>
+                        <?php 
+                        $image_src = 'https://source.unsplash.com/300x300?product';
+                        if (!empty($product['image_url']) && filter_var($product['image_url'], FILTER_VALIDATE_URL)) {
+                            $image_src = htmlspecialchars($product['image_url']);
+                        } elseif (!empty($product['image_url'])) {
+                            // Jika ada image_url tapi tidak valid, gunakan unsplash dengan keyword dari nama produk
+                            $keyword = urlencode(str_replace(' ', '+', $product['name']));
+                            $image_src = "https://source.unsplash.com/300x300?" . $keyword;
+                        }
+                        ?>
+                        <img src="<?php echo $image_src; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="card-img-top">
                         <div class="product-badge">Baru</div>
                     </div>
                     <div class="card-body product-info">

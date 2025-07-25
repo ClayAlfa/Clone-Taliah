@@ -274,7 +274,16 @@ include 'includes/header.php';
                 <div class="order-label" style="margin-bottom: 15px; font-size: 16px;">Ringkasan Pesanan</div>
                 <?php foreach ($order_items as $item): ?>
                     <div class="item-row">
-                        <img src="<?php echo $item['image_url'] ?: 'assets/img/no-image.jpg'; ?>" alt="<?php echo $item['name']; ?>" class="item-image">
+                        <?php 
+                        $image_src = 'https://source.unsplash.com/50x50?product';
+                        if (!empty($item['image_url']) && filter_var($item['image_url'], FILTER_VALIDATE_URL)) {
+                            $image_src = htmlspecialchars($item['image_url']);
+                        } elseif (!empty($item['image_url'])) {
+                            $keyword = urlencode(str_replace(' ', '+', $item['name']));
+                            $image_src = "https://source.unsplash.com/50x50?" . $keyword;
+                        }
+                        ?>
+                        <img src="<?php echo $image_src; ?>" alt="<?php echo htmlspecialchars($item['name']); ?>" class="item-image">
                         <div class="item-details">
                             <div class="item-name"><?php echo $item['name']; ?></div>
                             <div class="item-price"><?php echo $item['quantity']; ?> x Rp <?php echo number_format($item['price'], 0, ',', '.'); ?></div>

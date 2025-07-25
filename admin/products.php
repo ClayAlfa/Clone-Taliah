@@ -23,58 +23,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $_SESSION['error'] = 'Semua field harus diisi dengan benar!';
                 } else {
                     try {
+                        $image_url = !empty($_POST['image_url']) ? trim($_POST['image_url']) : null;
+                        
                         $stmt = $pdo->prepare("
-                            INSERT INTO products (name, description, price, stock, category_id, brand, size, material, created_at) 
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                            INSERT INTO products (name, description, price, stock, category_id, brand, size, material, image_url, created_at) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
                         ");
-                        $stmt->execute([$name, $description, $price, $stock, $category_id, $brand, $size, $material]);
-                        
-                        $product_id = $pdo->lastInsertId();
-                        
-                        // Handle image upload
-                        if (isset($_FILES['images']) && !empty($_FILES['images']['name'][0])) {
-                            $upload_dir = '../assets/img/products/';
-                            if (!is_dir($upload_dir)) {
-                                mkdir($upload_dir, 0755, true);
-                            }
-                            
-                            $upload_errors = [];
-                            $first_image_uploaded = false;
-                            
-                            foreach ($_FILES['images']['name'] as $key => $filename) {
-                                if (!empty($filename)) {
-                                    // Check for upload errors
-                                    if ($_FILES['images']['error'][$key] !== UPLOAD_ERR_OK) {
-                                        $upload_errors[] = "Error uploading $filename: " . $_FILES['images']['error'][$key];
-                                        continue;
-                                    }
-                                    
-                                    $file_ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-                                    $allowed_ext = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-                                    
-                                    if (in_array($file_ext, $allowed_ext)) {
-                                        $new_filename = $product_id . '_' . time() . '_' . $key . '.' . $file_ext;
-                                        $upload_path = $upload_dir . $new_filename;
-                                        
-                                        if (move_uploaded_file($_FILES['images']['tmp_name'][$key], $upload_path)) {
-                                            // Set first successfully uploaded image as primary
-                                            $is_primary = !$first_image_uploaded ? 1 : 0;
-                                            $stmt = $pdo->prepare("INSERT INTO product_images (product_id, image_url, is_primary) VALUES (?, ?, ?)");
-                                            $stmt->execute([$product_id, 'assets/img/products/' . $new_filename, $is_primary]);
-                                            $first_image_uploaded = true;
-                                        } else {
-                                            $upload_errors[] = "Gagal memindahkan file $filename";
-                                        }
-                                    } else {
-                                        $upload_errors[] = "Format file $filename tidak didukung";
-                                    }
-                                }
-                            }
-                            
-                            if (!empty($upload_errors)) {
-                                $_SESSION['error'] = implode('<br>', $upload_errors);
-                            }
-                        }
+                        $stmt->execute([$name, $description, $price, $stock, $category_id, $brand, $size, $material, $image_url]);
                         
                         logActivity($_SESSION['user_id'], 'Menambahkan produk: ' . $name);
                         $_SESSION['success'] = 'Produk berhasil ditambahkan!';
@@ -99,62 +54,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $_SESSION['error'] = 'Semua field harus diisi dengan benar!';
                 } else {
                     try {
+                        $image_url = !empty($_POST['image_url']) ? trim($_POST['image_url']) : null;
+                        
                         $stmt = $pdo->prepare("
                             UPDATE products 
-                            SET name = ?, description = ?, price = ?, stock = ?, category_id = ?, brand = ?, size = ?, material = ?, updated_at = NOW()
+                            SET name = ?, description = ?, price = ?, stock = ?, category_id = ?, brand = ?, size = ?, material = ?, image_url = ?, updated_at = NOW()
                             WHERE id = ?
                         ");
-                        $stmt->execute([$name, $description, $price, $stock, $category_id, $brand, $size, $material, $id]);
-                        
-                        // Handle new image uploads
-                        if (isset($_FILES['images']) && !empty($_FILES['images']['name'][0])) {
-                            $upload_dir = '../assets/img/products/';
-                            if (!is_dir($upload_dir)) {
-                                mkdir($upload_dir, 0755, true);
-                            }
-                            
-                            $upload_errors = [];
-                            // Check if product has any existing images
-                            $stmt = $pdo->prepare("SELECT COUNT(*) FROM product_images WHERE product_id = ?");
-                            $stmt->execute([$id]);
-                            $existing_images = $stmt->fetchColumn();
-                            
-                            $first_image_uploaded = false;
-                            
-                            foreach ($_FILES['images']['name'] as $key => $filename) {
-                                if (!empty($filename)) {
-                                    // Check for upload errors
-                                    if ($_FILES['images']['error'][$key] !== UPLOAD_ERR_OK) {
-                                        $upload_errors[] = "Error uploading $filename: " . $_FILES['images']['error'][$key];
-                                        continue;
-                                    }
-                                    
-                                    $file_ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-                                    $allowed_ext = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-                                    
-                                    if (in_array($file_ext, $allowed_ext)) {
-                                        $new_filename = $id . '_' . time() . '_' . $key . '.' . $file_ext;
-                                        $upload_path = $upload_dir . $new_filename;
-                                        
-                                        if (move_uploaded_file($_FILES['images']['tmp_name'][$key], $upload_path)) {
-                                            // Set as primary if it's the first image for this product
-                                            $is_primary = ($existing_images == 0 && !$first_image_uploaded) ? 1 : 0;
-                                            $stmt = $pdo->prepare("INSERT INTO product_images (product_id, image_url, is_primary) VALUES (?, ?, ?)");
-                                            $stmt->execute([$id, 'assets/img/products/' . $new_filename, $is_primary]);
-                                            $first_image_uploaded = true;
-                                        } else {
-                                            $upload_errors[] = "Gagal memindahkan file $filename";
-                                        }
-                                    } else {
-                                        $upload_errors[] = "Format file $filename tidak didukung";
-                                    }
-                                }
-                            }
-                            
-                            if (!empty($upload_errors)) {
-                                $_SESSION['error'] = implode('<br>', $upload_errors);
-                            }
-                        }
+                        $stmt->execute([$name, $description, $price, $stock, $category_id, $brand, $size, $material, $image_url, $id]);
                         
                         logActivity($_SESSION['user_id'], 'Mengubah produk: ' . $name);
                         $_SESSION['success'] = 'Produk berhasil diperbarui!';
@@ -172,19 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $stmt->execute([$id]);
                     $product_name = $stmt->fetchColumn();
                     
-                    // Delete product images from database and files
-                    $stmt = $pdo->prepare("SELECT image_url FROM product_images WHERE product_id = ?");
-                    $stmt->execute([$id]);
-                    $images = $stmt->fetchAll(PDO::FETCH_COLUMN);
-                    
-                    foreach ($images as $image_url) {
-                        $file_path = '../' . $image_url;
-                        if (file_exists($file_path)) {
-                            unlink($file_path);
-                        }
-                    }
-                    
-                    $pdo->prepare("DELETE FROM product_images WHERE product_id = ?")->execute([$id]);
+                    // No need to delete separate image files since we're using URLs
                     $pdo->prepare("DELETE FROM carts WHERE product_id = ?")->execute([$id]);
                     $pdo->prepare("DELETE FROM products WHERE id = ?")->execute([$id]);
                     
@@ -195,26 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
                 break;
                 
-            case 'delete_image':
-                $image_id = intval($_POST['image_id']);
-                try {
-                    $stmt = $pdo->prepare("SELECT image_url FROM product_images WHERE id = ?");
-                    $stmt->execute([$image_id]);
-                    $image_url = $stmt->fetchColumn();
-                    
-                    if ($image_url) {
-                        $file_path = '../' . $image_url;
-                        if (file_exists($file_path)) {
-                            unlink($file_path);
-                        }
-                        
-                        $pdo->prepare("DELETE FROM product_images WHERE id = ?")->execute([$image_id]);
-                        $_SESSION['success'] = 'Gambar berhasil dihapus!';
-                    }
-                } catch (Exception $e) {
-                    $_SESSION['error'] = 'Gagal menghapus gambar: ' . $e->getMessage();
-                }
-                break;
         }
     }
     
@@ -273,8 +148,7 @@ $total_pages = ceil($total_products / $per_page);
 
 // Get products
 $query = "
-    SELECT p.*, c.name as category_name,
-           (SELECT image_url FROM product_images WHERE product_id = p.id AND is_primary = 1 LIMIT 1) as primary_image
+    SELECT p.*, c.name as category_name
     FROM products p 
     JOIN categories c ON p.category_id = c.id 
     $where_clause 
@@ -309,7 +183,7 @@ require_once 'includes/admin_header.php';
                 <h5 class="modal-title">Tambah Produk Baru</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" enctype="multipart/form-data">
+            <form method="POST">
                 <div class="modal-body">
                     <input type="hidden" name="action" value="add">
                     
@@ -352,9 +226,9 @@ require_once 'includes/admin_header.php';
                             <textarea class="form-control" name="description" rows="4" required></textarea>
                         </div>
                         <div class="col-12">
-                            <label class="form-label">Gambar Produk</label>
-                            <input type="file" class="form-control" name="images[]" multiple accept="image/*">
-                            <small class="text-muted">Pilih beberapa gambar. Gambar pertama akan menjadi gambar utama.</small>
+                            <label class="form-label">URL Gambar Produk</label>
+                            <input type="url" class="form-control" name="image_url" placeholder="https://source.unsplash.com/400x400?shoes">
+                            <small class="text-muted">Contoh: https://source.unsplash.com/400x400?shoes atau URL gambar lainnya</small>
                         </div>
                     </div>
                 </div>
@@ -375,7 +249,7 @@ require_once 'includes/admin_header.php';
                 <h5 class="modal-title">Edit Produk</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" enctype="multipart/form-data">
+            <form method="POST">
                 <div class="modal-body">
                     <input type="hidden" name="action" value="edit">
                     <input type="hidden" name="id" id="edit_id">
@@ -419,9 +293,9 @@ require_once 'includes/admin_header.php';
                             <textarea class="form-control" name="description" id="edit_description" rows="4" required></textarea>
                         </div>
                         <div class="col-12">
-                            <label class="form-label">Tambah Gambar Baru</label>
-                            <input type="file" class="form-control" name="images[]" multiple accept="image/*">
-                            <small class="text-muted">Pilih gambar baru untuk ditambahkan ke produk.</small>
+                            <label class="form-label">URL Gambar Produk</label>
+                            <input type="url" class="form-control" name="image_url" id="edit_image_url" placeholder="https://source.unsplash.com/400x400?shoes">
+                            <small class="text-muted">Masukkan URL gambar produk. Contoh: https://source.unsplash.com/400x400?shoes</small>
                         </div>
                     </div>
                 </div>
@@ -486,6 +360,7 @@ function editProduct(product) {
     document.getElementById('edit_brand').value = product.brand || '';
     document.getElementById('edit_size').value = product.size || '';
     document.getElementById('edit_material').value = product.material || '';
+    document.getElementById('edit_image_url').value = product.image_url || '';
     
     new bootstrap.Modal(document.getElementById('editProductModal')).show();
 }
@@ -496,57 +371,6 @@ function deleteProduct(id, name) {
     new bootstrap.Modal(document.getElementById('deleteModal')).show();
 }
 
-function viewProductImages(productId) {
-    fetch(`ajax/get_product_images.php?product_id=${productId}`)
-        .then(response => response.json())
-        .then(data => {
-            const container = document.getElementById('productImagesContainer');
-            
-            if (data.success && data.images.length > 0) {
-                let html = '<div class="row g-3">';
-                data.images.forEach(image => {
-                    html += `
-                        <div class="col-md-4">
-                            <div class="card">
-                                <img src="<?php echo SITE_URL; ?>/${image.image_url}" class="card-img-top" style="height: 200px; object-fit: cover;">
-                                <div class="card-body p-2">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <small class="text-muted">${image.is_primary ? 'Gambar Utama' : 'Gambar Tambahan'}</small>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteImage(${image.id})">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-                html += '</div>';
-                container.innerHTML = html;
-            } else {
-                container.innerHTML = '<p class="text-center text-muted">Tidak ada gambar untuk produk ini</p>';
-            }
-            
-            new bootstrap.Modal(document.getElementById('productImagesModal')).show();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Gagal memuat gambar produk');
-        });
-}
-
-function deleteImage(imageId) {
-    if (confirm('Apakah Anda yakin ingin menghapus gambar ini?')) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.innerHTML = `
-            <input type="hidden" name="action" value="delete_image">
-            <input type="hidden" name="image_id" value="${imageId}">
-        `;
-        document.body.appendChild(form);
-        form.submit();
-    }
-}
 </script>
 
     <!-- Filters -->
@@ -617,7 +441,16 @@ function deleteImage(imageId) {
                         <?php foreach ($products as $product): ?>
                         <tr>
                             <td>
-                                <img src="<?php echo SITE_URL . '/' . ($product['primary_image'] ?: 'assets/img/no-image.jpg'); ?>" 
+                                <?php 
+                                $image_src = 'https://source.unsplash.com/60x60?product';
+                                if (!empty($product['image_url']) && filter_var($product['image_url'], FILTER_VALIDATE_URL)) {
+                                    $image_src = htmlspecialchars($product['image_url']);
+                                } elseif (!empty($product['image_url'])) {
+                                    $keyword = urlencode(str_replace(' ', '+', $product['name']));
+                                    $image_src = "https://source.unsplash.com/60x60?" . $keyword;
+                                }
+                                ?>
+                                <img src="<?php echo $image_src; ?>" 
                                      alt="<?php echo htmlspecialchars($product['name']); ?>" 
                                      class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
                             </td>
@@ -646,10 +479,6 @@ function deleteImage(imageId) {
                                     <button type="button" class="btn btn-outline-primary" 
                                             onclick="editProduct(<?php echo htmlspecialchars(json_encode($product)); ?>)">
                                         <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-info" 
-                                            onclick="viewProductImages(<?php echo $product['id']; ?>)">
-                                        <i class="fas fa-images"></i>
                                     </button>
                                     <button type="button" class="btn btn-outline-danger" 
                                             onclick="deleteProduct(<?php echo $product['id']; ?>, '<?php echo htmlspecialchars($product['name']); ?>')">

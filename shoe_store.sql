@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 25 Jul 2025 pada 16.26
+-- Waktu pembuatan: 25 Jul 2025 pada 17.25
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -87,7 +87,14 @@ INSERT INTO `activity_logs` (`id`, `user_id`, `activity`, `created_at`) VALUES
 (46, 1, 'User login', '2025-07-25 18:53:28'),
 (47, 1, 'User logout', '2025-07-25 18:53:42'),
 (48, 1, 'User login', '2025-07-25 18:53:51'),
-(49, 1, 'User logout', '2025-07-25 18:54:39');
+(49, 1, 'User logout', '2025-07-25 18:54:39'),
+(50, 1, 'User login', '2025-07-25 23:09:40'),
+(51, 1, 'Mengubah produk: Vans Old Skool', '2025-07-25 23:16:08'),
+(52, 1, 'Mengubah produk: Vans Old Skool', '2025-07-25 23:16:17'),
+(53, 1, 'Mengubah produk: Vans Old Skool', '2025-07-25 23:16:35'),
+(54, 1, 'Menghapus produk: Vans Old Skool', '2025-07-25 23:17:52'),
+(55, 1, 'Mengubah produk: New Balance 990v5', '2025-07-25 23:22:19'),
+(56, 1, 'Mengubah produk: New Balance 990v5', '2025-07-25 23:24:43');
 
 -- --------------------------------------------------------
 
@@ -206,48 +213,44 @@ CREATE TABLE `products` (
   `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `brand` varchar(255) DEFAULT '',
   `size` varchar(100) DEFAULT '',
-  `material` varchar(255) DEFAULT ''
+  `material` varchar(255) DEFAULT '',
+  `image_url` varchar(500) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data untuk tabel `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `description`, `price`, `stock`, `category_id`, `created_at`, `updated_at`, `brand`, `size`, `material`) VALUES
-(1, 'Nike Air Max 270', 'Sepatu sneakers premium dengan teknologi Air Max terbaru', 1299000.00, 45, 1, '2025-07-18 05:48:00', '2025-07-25 18:32:41', 'NIKE', '40', 'Batu'),
-(2, 'Adidas Ultraboost 22', 'Sepatu lari dengan teknologi Boost untuk kenyamanan maksimal', 2199000.00, 29, 5, '2025-07-18 05:48:00', '2025-07-18 11:37:50', '', '', ''),
-(3, 'Converse Chuck Taylor', 'Sepatu klasik yang timeless dan stylish', 899000.00, 74, 1, '2025-07-18 05:48:00', '2025-07-18 20:44:55', '', '', ''),
-(4, 'Clarks Desert Boot', 'Sepatu formal casual yang elegan', 1599000.00, 25, 2, '2025-07-18 05:48:00', '2025-07-18 05:48:00', '', '', ''),
-(5, 'Birkenstock Arizona', 'Sandal premium dengan footbed anatomis', 1099000.00, 39, 3, '2025-07-18 05:48:00', '2025-07-18 20:44:55', '', '', '');
-
--- --------------------------------------------------------
-
---
--- Struktur dari tabel `product_images`
---
-
-CREATE TABLE `product_images` (
-  `id` int(11) NOT NULL,
-  `product_id` int(11) DEFAULT NULL,
-  `image_url` varchar(500) DEFAULT NULL,
-  `is_primary` tinyint(1) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data untuk tabel `product_images`
---
-
-INSERT INTO `product_images` (`id`, `product_id`, `image_url`, `is_primary`) VALUES
-(1, 1, 'assets/img/products/nike-air-max-1.jpg', 1),
-(2, 1, 'assets/img/products/nike-air-max-2.jpg', 0),
-(3, 2, 'assets/img/products/adidas-ultraboost-1.jpg', 1),
-(4, 2, 'assets/img/products/adidas-ultraboost-2.jpg', 0),
-(5, 3, 'assets/img/products/converse-chuck-1.jpg', 1),
-(6, 4, 'assets/img/products/clarks-desert-1.jpg', 1),
-(7, 5, 'assets/img/products/birkenstock-1.jpg', 1),
-(8, 1, 'assets/img/products/1_1752823719_0.jpg', 0),
-(9, 1, 'assets/img/products/1_1752841420_0.jpg', 0),
-(10, 1, 'assets/img/products/1_1752841529_0.jpg', 0);
+INSERT INTO `products` (`id`, `name`, `description`, `price`, `stock`, `category_id`, `created_at`, `updated_at`, `brand`, `size`, `material`, `image_url`) VALUES
+(1, 'Nike Air Max 270', 'Sepatu sneakers premium dengan teknologi Air Max terbaru', 1299000.00, 45, 1, '2025-07-18 05:48:00', '2025-07-25 23:21:43', 'NIKE', '40, 41, 42, 43', 'Mesh dan Kulit Sintetis', 'https://source.unsplash.com/400x400?nike+air+max+270'),
+(2, 'Adidas Ultraboost 22', 'Sepatu lari dengan teknologi Boost untuk kenyamanan maksimal', 2199000.00, 29, 5, '2025-07-18 05:48:00', '2025-07-25 23:21:43', 'Adidas', '39, 40, 41, 42, 43, 44', 'Primeknit', 'https://source.unsplash.com/400x400?adidas+ultraboost'),
+(3, 'Converse Chuck Taylor', 'Sepatu klasik yang timeless dan stylish', 899000.00, 74, 1, '2025-07-18 05:48:00', '2025-07-25 23:21:43', 'Converse', '36, 37, 38, 39, 40, 41, 42, 43', 'Canvas', 'https://source.unsplash.com/400x400?converse+chuck+taylor'),
+(4, 'Clarks Desert Boot', 'Sepatu formal casual yang elegan', 1599000.00, 25, 2, '2025-07-18 05:48:00', '2025-07-25 23:21:43', 'Clarks', '40, 41, 42, 43, 44', 'Kulit Asli', 'https://source.unsplash.com/400x400?clarks+desert+boots'),
+(5, 'Birkenstock Arizona', 'Sandal premium dengan footbed anatomis', 1099000.00, 39, 3, '2025-07-18 05:48:00', '2025-07-25 23:21:43', 'Birkenstock', '36, 37, 38, 39, 40, 41, 42, 43', 'Kulit Asli', 'https://source.unsplash.com/400x400?birkenstock+arizona'),
+(7, 'New Balance 990v5', 'Sepatu sneakers premium made in USA', 3299000.00, 20, 1, '2025-07-25 15:00:00', '2025-07-25 23:24:43', 'New Balance', '40, 41, 42, 43, 44', 'Kulit dan Mesh', 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTn-zvZT23OLsWi3NPhsQSh-re9zLBdZlHoAPtnohe94hAqZoHHsnqOKGpTBmBL4rYeGwgMN7ObdsbBzMR6X5_A4frLq1bu0ya70oXZqQFe'),
+(8, 'Puma RS-X', 'Sepatu retro futuristik dengan desain bold', 1499000.00, 35, 1, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'Puma', '39, 40, 41, 42, 43, 44', 'Mesh dan Kulit Sintetis', 'https://source.unsplash.com/400x400?puma+rs+x'),
+(9, 'Reebok Classic Leather', 'Sepatu klasik yang timeless dan nyaman', 1099000.00, 50, 1, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'Reebok', '36, 37, 38, 39, 40, 41, 42, 43', 'Kulit Asli', 'https://source.unsplash.com/400x400?reebok+classic+leather'),
+(10, 'ASICS Gel-Lyte III', 'Sepatu retro dengan teknologi gel cushioning', 1799000.00, 25, 1, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'ASICS', '39, 40, 41, 42, 43, 44', 'Suede dan Mesh', 'https://source.unsplash.com/400x400?asics+gel+lyte'),
+(11, 'Dr. Martens 1460', 'Sepatu boots klasik dengan sole air-cushioned', 2599000.00, 15, 2, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'Dr. Martens', '39, 40, 41, 42, 43, 44, 45', 'Kulit Asli', 'https://source.unsplash.com/400x400?dr+martens+boots'),
+(12, 'Cole Haan Oxford', 'Sepatu formal premium untuk business', 2299000.00, 20, 2, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'Cole Haan', '40, 41, 42, 43, 44', 'Kulit Asli', 'https://source.unsplash.com/400x400?cole+haan+oxford'),
+(13, 'Florsheim Wingtip', 'Sepatu formal klasik dengan detail brogue', 1899000.00, 18, 2, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'Florsheim', '40, 41, 42, 43, 44', 'Kulit Asli', 'https://source.unsplash.com/400x400?florsheim+wingtip'),
+(14, 'Rockport DresSports', 'Sepatu formal comfortable untuk aktivitas sehari-hari', 1699000.00, 30, 2, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'Rockport', '39, 40, 41, 42, 43, 44', 'Kulit Asli', 'https://source.unsplash.com/400x400?rockport+dress+shoes'),
+(15, 'Timberland 6-Inch Boot', 'Sepatu boots kerja premium tahan lama', 2199000.00, 25, 2, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'Timberland', '39, 40, 41, 42, 43, 44, 45', 'Kulit Nubuck', 'https://source.unsplash.com/400x400?timberland+boots'),
+(16, 'Havaianas Brasil', 'Sandal jepit casual dari Brasil', 299000.00, 100, 3, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'Havaianas', '36, 37, 38, 39, 40, 41, 42, 43', 'Karet', 'https://source.unsplash.com/400x400?havaianas+flip+flops'),
+(17, 'Crocs Classic Clog', 'Sandal clogs yang nyaman untuk aktivitas santai', 799000.00, 80, 3, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'Crocs', '36, 37, 38, 39, 40, 41, 42, 43, 44', 'Croslite', 'https://source.unsplash.com/400x400?crocs+clogs'),
+(18, 'Teva Universal Trail', 'Sandal outdoor untuk petualangan alam', 899000.00, 40, 4, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'Teva', '38, 39, 40, 41, 42, 43, 44', 'Nylon dan Karet', 'https://source.unsplash.com/400x400?teva+sandals'),
+(19, 'Adidas Adilette', 'Sandal slide sporty untuk recovery', 599000.00, 70, 4, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'Adidas', '36, 37, 38, 39, 40, 41, 42, 43, 44', 'EVA', 'https://source.unsplash.com/400x400?adidas+slides'),
+(20, 'Nike Benassi', 'Sandal slide dengan bantalan empuk', 649000.00, 65, 4, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'Nike', '36, 37, 38, 39, 40, 41, 42, 43, 44', 'Synthetic', 'https://source.unsplash.com/400x400?nike+slides'),
+(21, 'Nike ZoomX Vaporfly', 'Sepatu lari marathon dengan teknologi terdepan', 3999000.00, 10, 5, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'Nike', '39, 40, 41, 42, 43, 44', 'ZoomX Foam', 'https://source.unsplash.com/400x400?nike+vaporfly'),
+(22, 'Adidas Alphaboost', 'Sepatu lari dengan teknologi boost terbaru', 2499000.00, 30, 5, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'Adidas', '39, 40, 41, 42, 43, 44', 'Boost Foam', 'https://source.unsplash.com/400x400?adidas+boost+running'),
+(23, 'Brooks Ghost 14', 'Sepatu lari dengan cushioning yang responsif', 2199000.00, 25, 5, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'Brooks', '39, 40, 41, 42, 43, 44', 'DNA LOFT', 'https://source.unsplash.com/400x400?brooks+ghost'),
+(24, 'Hoka Clifton 8', 'Sepatu lari dengan maksimal cushioning', 2299000.00, 20, 5, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'Hoka', '39, 40, 41, 42, 43, 44', 'EVA Compression', 'https://source.unsplash.com/400x400?hoka+clifton'),
+(25, 'Saucony Kinvara 12', 'Sepatu lari ringan untuk speed training', 1899000.00, 35, 5, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'Saucony', '39, 40, 41, 42, 43, 44', 'PWRRUN', 'https://source.unsplash.com/400x400?saucony+kinvara'),
+(26, 'Merrell Moab 3', 'Sandal hiking dengan grip superior', 1299000.00, 30, 6, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'Merrell', '39, 40, 41, 42, 43, 44', 'Kulit dan Mesh', 'https://source.unsplash.com/400x400?merrell+hiking+sandals'),
+(27, 'Keen Newport H2', 'Sandal outdoor waterproof untuk aktivitas air', 1599000.00, 25, 6, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'Keen', '38, 39, 40, 41, 42, 43, 44', 'Polyester Webbing', 'https://source.unsplash.com/400x400?keen+newport+sandals'),
+(28, 'Chaco Z/1 Classic', 'Sandal adventure dengan tali adjustable', 1399000.00, 20, 6, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'Chaco', '38, 39, 40, 41, 42, 43, 44', 'Polyester Jacquard', 'https://source.unsplash.com/400x400?chaco+adventure+sandals'),
+(29, 'Source Classic', 'Sandal gunung dengan sistem quick-dry', 999000.00, 40, 6, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'Source', '38, 39, 40, 41, 42, 43, 44', 'Nylon dan Karet', 'https://source.unsplash.com/400x400?source+outdoor+sandals'),
+(30, 'Salomon X Ultra 3', 'Sandal hiking teknis untuk terrain sulit', 1799000.00, 15, 6, '2025-07-25 15:00:00', '2025-07-25 23:21:43', 'Salomon', '39, 40, 41, 42, 43, 44', 'Synthetic dan Mesh', 'https://source.unsplash.com/400x400?salomon+hiking+sandals');
 
 -- --------------------------------------------------------
 
@@ -361,7 +364,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `address`, `role_id`, `status`, `created_at`, `updated_at`) VALUES
 (1, 'Administrator', 'admin@shoebrand.com', 'admin123', NULL, NULL, 1, 1, '2025-07-18 05:48:00', '2025-07-25 18:54:31'),
-(2, 'Muhammad Ammar AlFarabi', 'customer@example.com', 'customer123\n', NULL, NULL, 2, 1, '2025-07-18 05:53:20', '2025-07-25 18:58:45'),
+(2, 'customer', 'customer@example.com', 'customer123\n', NULL, NULL, 2, 1, '2025-07-18 05:53:20', '2025-07-25 23:25:06'),
 (3, 'Nur Taliyah', 'sekian@gmail.com', 'password123', '0812', 'dimana saja', 2, 1, '2025-07-18 20:43:17', '2025-07-25 18:54:31');
 
 --
@@ -410,13 +413,6 @@ ALTER TABLE `products`
   ADD KEY `category_id` (`category_id`);
 
 --
--- Indeks untuk tabel `product_images`
---
-ALTER TABLE `product_images`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `product_id` (`product_id`);
-
---
 -- Indeks untuk tabel `roles`
 --
 ALTER TABLE `roles`
@@ -458,7 +454,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT untuk tabel `activity_logs`
 --
 ALTER TABLE `activity_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT untuk tabel `carts`
@@ -488,13 +484,7 @@ ALTER TABLE `order_items`
 -- AUTO_INCREMENT untuk tabel `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT untuk tabel `product_images`
---
-ALTER TABLE `product_images`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT untuk tabel `roles`
@@ -548,12 +538,6 @@ ALTER TABLE `carts`
 --
 ALTER TABLE `products`
   ADD CONSTRAINT `products_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`);
-
---
--- Ketidakleluasaan untuk tabel `product_images`
---
-ALTER TABLE `product_images`
-  ADD CONSTRAINT `product_images_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
 
 --
 -- Ketidakleluasaan untuk tabel `transactions`

@@ -160,8 +160,7 @@ function clearCart($pdo, $user_id) {
 function getCartItems($pdo, $user_id) {
     $stmt = $pdo->prepare("
         SELECT c.id as cart_id, c.quantity, c.product_id,
-               p.name, p.price, p.stock,
-               (SELECT image_url FROM product_images WHERE product_id = p.id LIMIT 1) as image_url
+               p.name, p.price, p.stock, p.image_url
         FROM carts c
         JOIN products p ON c.product_id = p.id
         WHERE c.user_id = ?
