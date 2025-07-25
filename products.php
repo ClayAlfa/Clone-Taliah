@@ -49,8 +49,7 @@ $total_pages = ceil($total_products / $per_page);
 
 // Get products
 $sql = "
-    SELECT p.*, c.name as category_name,
-           (SELECT image_url FROM product_images WHERE product_id = p.id LIMIT 1) as image_url
+    SELECT p.*, c.name as category_name
     FROM products p 
     LEFT JOIN categories c ON p.category_id = c.id 
     $where_clause

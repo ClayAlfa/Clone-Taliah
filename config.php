@@ -6,7 +6,7 @@ define('DB_PASS', '');
 define('DB_NAME', 'shoe_store');
 
 // Site configuration
-define('SITE_URL', 'http://localhost/');
+define('SITE_URL', 'http://localhost/clone-taliah');
 define('SITE_NAME', 'ShoeBrand Store');
 
 // Upload configuration

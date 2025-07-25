@@ -5,8 +5,7 @@ $page_title = 'Beranda';
 
 // Get featured products
 $stmt = $pdo->query("
-    SELECT p.*, c.name as category_name, 
-           (SELECT image_url FROM product_images WHERE product_id = p.id LIMIT 1) as image_url
+    SELECT p.*, c.name as category_name
     FROM products p 
     LEFT JOIN categories c ON p.category_id = c.id 
     ORDER BY p.created_at DESC 
@@ -41,7 +40,7 @@ include 'includes/header.php';
             </div>
             <div class="col-lg-6">
                 <div class="hero-image text-center">
-                    <img src="https://source.unsplash.com/random/1200x400?shoes" alt="Koleksi Sepatu & Sandal" class="img-fluid" style="max-height: 400px; border-radius: 15px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+                    <img src="https://dynamic.zacdn.com/vCOi2aLHUHnB2CCKSYS7cQ4s1uU=/filters:quality(70):format(webp)/https://static-id.zacdn.com/p/lurad-9438-0315544-1.jpg" alt="Koleksi Sepatu & Sandal" class="img-fluid" style="max-height: 400px; border-radius: 15px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
                 </div>
             </div>
         </div>

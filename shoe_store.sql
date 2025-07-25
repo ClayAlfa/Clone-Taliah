@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 25 Jul 2025 pada 17.25
+-- Waktu pembuatan: 25 Jul 2025 pada 18.51
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -94,7 +94,12 @@ INSERT INTO `activity_logs` (`id`, `user_id`, `activity`, `created_at`) VALUES
 (53, 1, 'Mengubah produk: Vans Old Skool', '2025-07-25 23:16:35'),
 (54, 1, 'Menghapus produk: Vans Old Skool', '2025-07-25 23:17:52'),
 (55, 1, 'Mengubah produk: New Balance 990v5', '2025-07-25 23:22:19'),
-(56, 1, 'Mengubah produk: New Balance 990v5', '2025-07-25 23:24:43');
+(56, 1, 'Mengubah produk: New Balance 990v5', '2025-07-25 23:24:43'),
+(57, 1, 'User login', '2025-07-26 00:33:31'),
+(58, 1, 'User logout', '2025-07-26 00:33:50'),
+(59, 1, 'User logout', '2025-07-26 00:40:49'),
+(60, 1, 'User login', '2025-07-26 00:51:29'),
+(61, 1, 'User logout', '2025-07-26 00:51:41');
 
 -- --------------------------------------------------------
 
@@ -454,7 +459,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT untuk tabel `activity_logs`
 --
 ALTER TABLE `activity_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT untuk tabel `carts`

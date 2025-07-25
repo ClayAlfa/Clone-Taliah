@@ -52,7 +52,7 @@
                     <p class="text-muted mb-0">&copy; 2024 <?php echo SITE_NAME; ?>. All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <img src="https://source.unsplash.com/random/1200x30?payment" alt="Payment Methods" class="img-fluid" style="max-height: 30px;">
+                    <img src="https://dynamic.zacdn.com/vCOi2aLHUHnB2CCKSYS7cQ4s1uU=/filters:quality(70):format(webp)/https://static-id.zacdn.com/p/lurad-9438-0315544-1.jpg" alt="Payment Methods" class="img-fluid" style="max-height: 30px;">
                 </div>
             </div>
         </div>
