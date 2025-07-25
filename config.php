@@ -13,10 +13,12 @@ define('SITE_NAME', 'ShoeBrand Store');
 define('UPLOAD_PATH', 'assets/img/products/');
 define('MAX_FILE_SIZE', 5 * 1024 * 1024); // 5MB
 
-// Session configuration
-ini_set('session.cookie_httponly', 1);
-ini_set('session.use_only_cookies', 1);
-ini_set('session.cookie_secure', 0); // Set to 1 for HTTPS
+// Session configuration - only set if session not started
+if (session_status() == PHP_SESSION_NONE) {
+    ini_set('session.cookie_httponly', 1);
+    ini_set('session.use_only_cookies', 1);
+    ini_set('session.cookie_secure', 0); // Set to 1 for HTTPS
+}
 
 // Error reporting (disable in production)
 error_reporting(E_ALL);
@@ -74,6 +76,8 @@ function logActivity($user_id, $activity) {
     $stmt->execute([$user_id, $activity]);
 }
 
-// Start session
-session_start();
+// Start session if not started yet
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 ?>

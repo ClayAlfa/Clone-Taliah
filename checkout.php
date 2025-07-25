@@ -28,8 +28,7 @@ if (isset($_POST['selected_items']) && !empty($_POST['selected_items'])) {
     
     $stmt = $pdo->prepare("
         SELECT c.id as cart_id, c.quantity, c.product_id,
-               p.name, p.price, p.stock,
-               (SELECT image_url FROM product_images WHERE product_id = p.id LIMIT 1) as image_url
+               p.name, p.price, p.stock, p.image_url
         FROM carts c
         JOIN products p ON c.product_id = p.id
         WHERE c.user_id = ? AND c.id IN ($placeholders)
@@ -43,8 +42,7 @@ if (isset($_POST['selected_items']) && !empty($_POST['selected_items'])) {
     // If no specific items selected, get all cart items
     $stmt = $pdo->prepare("
         SELECT c.id as cart_id, c.quantity, c.product_id,
-               p.name, p.price, p.stock,
-               (SELECT image_url FROM product_images WHERE product_id = p.id LIMIT 1) as image_url
+               p.name, p.price, p.stock, p.image_url
         FROM carts c
         JOIN products p ON c.product_id = p.id
         WHERE c.user_id = ?

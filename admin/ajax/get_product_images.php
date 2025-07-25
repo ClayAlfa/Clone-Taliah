@@ -16,9 +16,20 @@ if (!isset($_GET['product_id'])) {
 $product_id = intval($_GET['product_id']);
 
 try {
-    $stmt = $pdo->prepare("SELECT * FROM product_images WHERE product_id = ? ORDER BY is_primary DESC, id ASC");
+    // Get product image from products table
+    $stmt = $pdo->prepare("SELECT image_url FROM products WHERE id = ?");
     $stmt->execute([$product_id]);
-    $images = $stmt->fetchAll();
+    $product = $stmt->fetch();
+    
+    $images = [];
+    if ($product && $product['image_url']) {
+        $images[] = [
+            'id' => 1,
+            'product_id' => $product_id,
+            'image_url' => $product['image_url'],
+            'is_primary' => 1
+        ];
+    }
     
     echo json_encode([
         'success' => true,
